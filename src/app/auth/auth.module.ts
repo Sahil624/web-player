@@ -7,6 +7,7 @@ import { LoginComponent } from './auth/auth/login/login.component';
 import { MatCardModule, MatInputModule, MatButtonModule } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RegisterComponent } from './auth/auth/register/register.component';
+import { AuthService } from './providers/auth/auth.service';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,9 @@ import { RegisterComponent } from './auth/auth/register/register.component';
         FormsModule,
         ReactiveFormsModule,
         MatButtonModule
+    ],
+    providers: [
+      AuthService
     ]
 })
 export class AuthModule { }

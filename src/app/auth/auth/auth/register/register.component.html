@@ -1,1 +1,19 @@
-<p>register works!</p>
+<div class="sign-up-container">
+	<form [formGroup]="signupForm">
+		<mat-form-field class="full-width">
+			<input matInput placeholder="Email" formControlName="email">
+    </mat-form-field>
+
+		<mat-form-field class="full-width">
+			<input matInput placeholder="Password" formControlName="password" type="password">
+    </mat-form-field>
+
+    <div class="sign-up-button">
+      <button mat-flat-button color="accent" (click)="signUp()">Sign Up</button>
+    </div>
+
+    <div class="sign-up-button">
+      <button mat-flat-button routerLink="/auth/login" type="button">Already registered? Login</button>
+    </div>
+	</form>
+</div>
