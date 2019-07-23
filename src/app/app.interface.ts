@@ -5,3 +5,8 @@ export interface UserInfo {
   getTime: number;
   expires: number;
 }
+
+export interface Routes {
+    name: string;
+    link: string;
+}
