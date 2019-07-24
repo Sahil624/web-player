@@ -4,6 +4,7 @@ class ApplicationUrls {
 
     get loginUrl() { return this.serverUrl + 'auth/login/'; }
     get registerUrl() { return this.serverUrl + 'auth/sign_up/'; }
+    get linkedServices() { return this.serverUrl + 'cloud/linked_services/'}
 }
 
 export const urls = new ApplicationUrls();

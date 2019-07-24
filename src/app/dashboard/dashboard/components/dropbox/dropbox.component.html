@@ -1,1 +1,4 @@
-<p>dropbox works!</p>
+<div class="dropbox-container" *ngIf="registered">
+    DropBox
+</div>
+<app-register-dropbox *ngIf="!registered"></app-register-dropbox>

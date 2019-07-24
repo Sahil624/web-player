@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { MatSidenavModule, MatButtonModule } from '@angular/material';
+import { MatSidenavModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { RegisterDropboxComponent } from './dashboard/components/register-dropbox/register-dropbox.component';
 import { DropboxComponent } from './dashboard/components/dropbox/dropbox.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,8 +18,11 @@ import { DropboxComponent } from './dashboard/components/dropbox/dropbox.compone
     imports: [
         CommonModule,
         DashboardRoutingModule,
+        ReactiveFormsModule,
+        FormsModule,
         MatSidenavModule,
-        MatButtonModule
+        MatButtonModule,
+        MatInputModule
     ]
 })
 export class DashboardModule { }

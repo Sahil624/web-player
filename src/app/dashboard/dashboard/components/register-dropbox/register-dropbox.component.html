@@ -1,1 +1,10 @@
-<p>register-dropbox works!</p>
+<div class="register-dropbox-container">
+	<div class="register-dropbox-wrapper">
+		<mat-form-field>
+			<mat-label>Enter Auth Token</mat-label>
+			<input matInput [formControl]="authToken">
+        </mat-form-field>
+
+        <button mat-flat-button color="accent">Save</button>
+   </div>
+</div>
