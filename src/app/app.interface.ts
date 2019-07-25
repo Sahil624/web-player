@@ -14,3 +14,12 @@ export interface Routes {
 export interface LinkedServicesResponse {
     [key: string]: string
 }
+
+export interface RegisterDropBoxParams {
+    auth_key: string;
+}
+
+export interface StartDownloadParams {
+    link: string;
+    cloud_service: number;
+}

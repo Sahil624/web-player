@@ -1,4 +1,11 @@
 <div class="dropbox-container" *ngIf="registered">
-    DropBox
+	<div class="download-form-wrapper">
+		<mat-form-field>
+			<mat-label>Enter Download Url</mat-label>
+			<input matInput [formControl]="downloadLink">
+        </mat-form-field>
+
+        <button mat-flat-button color="accent" (click)="startDownload()">Download</button>
+	</div>
 </div>
-<app-register-dropbox *ngIf="!registered"></app-register-dropbox>
+<app-register-dropbox (linked)="registerEvent($event)" *ngIf="!registered"></app-register-dropbox>
