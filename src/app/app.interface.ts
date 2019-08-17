@@ -12,7 +12,7 @@ export interface Routes {
 }
 
 export interface LinkedServicesResponse {
-    [key: string]: string
+    [key: string]: string;
 }
 
 export interface RegisterDropBoxParams {
@@ -22,4 +22,23 @@ export interface RegisterDropBoxParams {
 export interface StartDownloadParams {
     link: string;
     cloud_service: number;
+}
+
+export interface FoldersRequest {
+    cloud_service: number;
+}
+
+export interface FoldersResponse {
+    [key: string]: {
+        info: FileMetaData;
+        is_folder: boolean;
+        image_link?: string;
+        sub_directories: FoldersResponse[];
+    };
+}
+
+export interface FileMetaData {
+    id: string;
+    name: string;
+    path: string;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RegisterDropBoxParams, StartDownloadParams } from '../../../app.interface';
+import { RegisterDropBoxParams, StartDownloadParams, FoldersRequest, FoldersResponse } from '../../../app.interface';
 import { urls } from '../../../shared/constant/urls';
 
 @Injectable({
@@ -18,5 +18,11 @@ export class DropboxService {
 
     startDownload(params: StartDownloadParams) {
         return this.http.post(urls.downloadDropbox, params);
+    }
+
+    getDirectoryStructure(req: FoldersRequest) {
+        return this.http.get<FoldersResponse>(urls.directoryStruture, {
+            params: req as any
+        });
     }
 }

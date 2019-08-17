@@ -4,15 +4,15 @@ import { urls } from '../../../shared/constant/urls';
 import { LinkedServicesResponse } from '../../../app.interface';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class CloudServiceService {
 
-  constructor(
-      private http:HttpClient
-  ) { }
+    constructor(
+        private http: HttpClient
+    ) { }
 
-  getLinkedServices() {
-      return this.http.get<LinkedServicesResponse>(urls.linkedServices);
-  }
+    getLinkedServices() {
+        return this.http.get<LinkedServicesResponse>(urls.linkedServices);
+    }
 }

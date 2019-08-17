@@ -6,16 +6,16 @@ import { DropboxComponent } from './dashboard/components/dropbox/dropbox.compone
 
 const routes: Routes = [
     {
-        path:'',
+        path: '',
         component: DashboardComponent,
         children: [
             {
-                path:'',
+                path: '',
                 pathMatch: 'full',
                 redirectTo: 'dropbox'
             },
             {
-                path:'dropbox',
+                path: 'dropbox',
                 component: DropboxComponent
             }
         ]
@@ -23,7 +23,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
 export class DashboardRoutingModule { }

@@ -1,11 +1,32 @@
-<div class="dropbox-container" *ngIf="registered">
-	<div class="download-form-wrapper">
-		<mat-form-field>
-			<mat-label>Enter Download Url</mat-label>
-			<input matInput [formControl]="downloadLink">
-        </mat-form-field>
-
-        <button mat-flat-button color="accent" (click)="startDownload()">Download</button>
-	</div>
-</div>
 <app-register-dropbox (linked)="registerEvent($event)" *ngIf="!registered"></app-register-dropbox>
+
+<div class="dropbox-dashboard-wrapper">
+
+	<div class="directory-wrappers">
+
+		<div class="file-card-wrapper cursor-pointer" *ngFor="let file of filesNames">
+			<mat-card>
+				<span *ngIf="!directries[file]['image_link']">
+					<mat-card-header class="one-line-card-header">
+						<mat-card-title [matTooltip]="file" [style.width.px]="width - 50">{{ file }}</mat-card-title>
+						<mat-card-subtitle>Horror</mat-card-subtitle>
+
+						<mat-icon matTooltip="More">add</mat-icon>
+					</mat-card-header>
+
+
+					<img mat-card-image src="../../../../../assets/images/video-placeholder.png"
+						alt="Photo of a Shiba Inu">
+				</span>
+			</mat-card>
+		</div>
+	</div>
+
+
+	<div class="start-download-fab-wrapper">
+		<button mat-fab color="accent" (click)="openDownloadDialog()">
+			<mat-icon>add</mat-icon>
+		</button>
+	</div>
+
+</div>

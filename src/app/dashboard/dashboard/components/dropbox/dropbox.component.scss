@@ -1,11 +1,41 @@
-.dropbox-container {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.dropbox-dashboard-wrapper {
 
-    .download-form-wrapper {
-        text-align: center;
+    .directory-wrappers {
+        width: 90%;
+        margin: 16px auto;
+
+        .file-card-wrapper {
+            display: inline-block;
+            width: 248px;
+            margin: 8px;
+            transition: transform 260ms;
+
+            &:hover {
+                transform: scale(1.01);
+            }
+
+            mat-card {
+
+                mat-card-header {    
+                    width: 100%;
+                }
+            }
+
+            img {
+                max-height: 296px;
+            }
+        }
     }
+
+    .start-download-fab-wrapper {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+    }
+}
+
+.text-oneline {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
