@@ -11,13 +11,15 @@ import { RegisterDropboxComponent } from './dashboard/components/register-dropbo
 import { DropboxComponent } from './dashboard/components/dropbox/dropbox.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DownloadFileModule } from './dashboard/components/modules/download-file/download-file.module';
+import { MovieInfoComponent } from './dashboard/components/dropbox/components/movie-info/movie-info.component';
 
 
 @NgModule({
     declarations: [
         DashboardComponent,
         RegisterDropboxComponent,
-        DropboxComponent
+        DropboxComponent,
+        MovieInfoComponent
     ],
     imports: [
         CommonModule,

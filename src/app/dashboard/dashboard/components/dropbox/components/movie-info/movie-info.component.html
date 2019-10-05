@@ -1,0 +1,33 @@
+<div class="movie-info-container">
+
+    <div class="movie-info-wrapper" *ngIf="fileInfo">
+
+        <div class="banner-poster">
+
+            <div class="movie-info-header display-flex">
+                <span class="spacer"></span>
+                <div class="back">
+                    <button mat-flat-button color="primary">Back</button>
+                </div>
+                <!-- <div class="name">{{ 'Name' }}</div> -->
+            </div>
+
+            Banner
+        </div>
+
+        <div class="poster mat-elevation-z8">
+            <img src="../../../../../../../assets/images/video-placeholder.png">
+        </div>
+
+        <div class="info">
+            <div class="title">
+                {{ fileInfo.name }}
+            </div>
+
+            <div class="content">
+                Movie Info
+            </div>
+        </div>
+
+    </div>
+</div>

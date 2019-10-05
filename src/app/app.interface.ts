@@ -1,3 +1,5 @@
+import { CloudServiceEnum } from './app.structs';
+
 export interface UserInfo {
     accessToken: string;
     refreshToken: string;
@@ -41,4 +43,17 @@ export interface FileMetaData {
     id: string;
     name: string;
     path: string;
+}
+
+export interface FetchFileInfoRequest {
+    cloud_service: CloudServiceEnum;
+    file_path: string;
+}
+
+export interface FileInfo {
+    client_modified: string;
+    id: string;
+    name: string;
+    server_modified: string;
+    size: number;
 }

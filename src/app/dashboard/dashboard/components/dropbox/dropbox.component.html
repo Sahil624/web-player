@@ -2,13 +2,13 @@
 
 <div class="dropbox-dashboard-wrapper">
 
-	<div class="directory-wrappers">
+	<div class="directory-wrappers" [class.not-selected]="!selectedMovie">
 
-		<div class="file-card-wrapper cursor-pointer" *ngFor="let file of filesNames">
+		<div class="file-card-wrapper cursor-pointer" *ngFor="let file of filesNames" (click)="selectMovie(file)">
 			<mat-card>
 				<span *ngIf="!directries[file]['image_link']">
 					<mat-card-header class="one-line-card-header">
-						<mat-card-title [matTooltip]="file" [style.width.px]="width - 50">{{ file }}</mat-card-title>
+						<mat-card-title [matTooltip]="file">{{ file }}</mat-card-title>
 						<mat-card-subtitle>Horror</mat-card-subtitle>
 
 						<mat-icon matTooltip="More">add</mat-icon>
@@ -16,12 +16,15 @@
 
 
 					<img mat-card-image src="../../../../../assets/images/video-placeholder.png"
-						alt="Photo of a Shiba Inu">
+						alt="Movie Placeholder">
 				</span>
 			</mat-card>
 		</div>
 	</div>
 
+	<div class="info-wrapper" [class.display-none]="!selectedMovie">
+		<app-movie-info [path]="selectedMovie"></app-movie-info>
+	</div>
 
 	<div class="start-download-fab-wrapper">
 		<button mat-fab color="accent" (click)="openDownloadDialog()">

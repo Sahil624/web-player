@@ -1,8 +1,12 @@
 .dropbox-dashboard-wrapper {
+    position: relative;
 
     .directory-wrappers {
         width: 90%;
-        margin: 16px auto;
+
+        &.not-selected {
+            margin: 16px auto;
+        }
 
         .file-card-wrapper {
             display: inline-block;
@@ -25,6 +29,13 @@
                 max-height: 296px;
             }
         }
+    }
+
+    .info-wrapper {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        width: 100%;
     }
 
     .start-download-fab-wrapper {

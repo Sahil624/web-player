@@ -7,7 +7,8 @@ class ApplicationUrls {
     get linkedServices() { return this.serverUrl + 'cloud/linked_services/'; }
     get registerDropbox() { return this.serverUrl + 'cloud/register_drop_box/'; }
     get downloadDropbox() { return this.serverUrl + 'cloud/download_file/'; }
-    get directoryStruture() {return this.serverUrl + 'cloud/folders/'; }
+    get directoryStruture() { return this.serverUrl + 'cloud/folders/'; }
+    get fileInfo() { return this.serverUrl + 'cloud/file_info/'; }
 }
 
 export const urls = new ApplicationUrls();

@@ -16,6 +16,7 @@ export class DropboxComponent implements OnInit, OnDestroy {
     registered = true;
     private subscriptions: Subscription = new Subscription();
     directries: FoldersResponse = null;
+    selectedMovie = null;
 
     constructor(
         private cloudService: CloudServiceService,
@@ -53,6 +54,9 @@ export class DropboxComponent implements OnInit, OnDestroy {
         this.registered = event;
     }
 
+    selectMovie(fileName: string) {
+        this.selectedMovie = this.directries[fileName].info.path;
+    }
     ngOnInit() {
     }
 
