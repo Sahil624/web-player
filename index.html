@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Video Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.8/plyr.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            margin-bottom: 20px;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .url-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .history {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-info {
+            flex-grow: 1;
+        }
+
+        .timestamp {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="video-container">
+            <div class="url-input">
+                <input type="text" id="videoUrl" placeholder="Enter video URL">
+                <button onclick="loadVideo()">Load Video</button>
+            </div>
+            <div class="url-input">
+                <input type="text" id="subtitleUrl" placeholder="Enter subtitle URL (optional)">
+                <input type="file" id="subtitleFile" accept=".vtt,.srt">
+                <button onclick="loadSubtitles()">Load Subtitles</button>
+            </div>
+            <div class="video-wrapper">
+                <video id="player" playsinline>
+                    <source type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div class="history">
+            <h2>Watch History</h2>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.8/plyr.min.js"></script>
+    <script>
+        let player;
+        let currentVideo = null;
+
+        // Initialize player
+        document.addEventListener('DOMContentLoaded', function () {
+            const videoElement = document.getElementById('player');
+            player = new Plyr(videoElement, {
+                controls: [
+                    'play-large', 'play', 'progress', 'current-time', 'duration',
+                    'mute', 'volume', 'settings', 'pip', 'fullscreen'
+                ],
+                settings: ['captions', 'quality', 'speed'],
+                speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+            });
+
+            // Load last played video if exists
+            const lastVideo = localStorage.getItem('lastVideo');
+            if (lastVideo) {
+                const videoData = JSON.parse(lastVideo);
+                document.getElementById('subtitleUrl').value = videoData.subtitle;
+                document.getElementById('videoUrl').value = videoData.url;
+                loadVideo(videoData.time);
+            }
+
+            // Update history display
+            updateHistoryDisplay();
+
+            // Save progress periodically
+            player.on('timeupdate', () => {
+                if (currentVideo) {
+                    localStorage.setItem('lastVideo', JSON.stringify({
+                        url: currentVideo,
+                        time: player.currentTime,
+                        subtitle: document.getElementById('subtitleUrl').value
+                    }));
+                }
+            });
+        });
+
+        // Add error handling to video loading
+        async function loadVideo(startTime = 0) {
+            const url = document.getElementById('videoUrl').value;
+            if (!url) return;
+
+            currentVideo = url;
+            const videoElement = document.getElementById('player');
+
+            // Set up error handling
+            videoElement.onerror = function () {
+                console.error('Error loading video:', videoElement.error);
+                alert('Error loading video. Please check the URL and try again.');
+            };
+
+            // videoElement.src = url;
+            const tracks = [];
+            const subtitleUrl = document.getElementById('subtitleUrl').value;
+
+            if(subtitleUrl) {
+                const blobUrl = await loadSubtitles();
+
+                console.log(blobUrl);
+
+                tracks.push(
+                    {
+                        kind: 'captions',
+                        label: 'English',
+                        srclang: 'en',
+                        src: blobUrl,
+                        default: true,
+                    })
+            }
+
+            player.source = {
+                type: 'video',
+                sources: [
+                    {
+                        src: url,
+                    }
+                ],
+                tracks
+            };
+            player.currentTime = startTime;
+            //<!-- player.play(); -->
+
+            // Save to history
+            saveToHistory(url);
+
+            // Set start time if provided
+            if (startTime > 0) {
+                videoElement.addEventListener('loadedmetadata', () => {
+                    videoElement.currentTime = startTime;
+                }, { once: true });
+            }
+        }
+
+        // Add this helper function for SRT to VTT conversion
+        function srtToVTT(srtText) {
+            // Convert SRT time format to WebVTT format
+            let vttText = 'WEBVTT\n\n';
+
+            // Split into lines and process
+            const lines = srtText.trim().split('\n');
+            let inSubtitle = false;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+
+                // Skip subtitle numbers
+                if (!inSubtitle && /^\d+$/.test(line)) {
+                    continue;
+                }
+
+                // Convert time format
+                if (line.includes('-->')) {
+                    inSubtitle = true;
+                    // Replace , with . for milliseconds
+                    vttText += line.replace(/,/g, '.') + '\n';
+                } else if (line === '') {
+                    inSubtitle = false;
+                    vttText += '\n';
+                } else {
+                    vttText += line + '\n';
+                }
+            }
+
+            return vttText;
+        }
+
+        async function loadSubtitles() {
+            const subtitleUrl = document.getElementById('subtitleUrl').value;
+            const subtitleFile = document.getElementById('subtitleFile').files[0];
+            let videoElement = document.getElementsByTagName('video');
+
+            if(videoElement.length) {
+                videoElement = videoElement[0];
+            } else {
+                console.log("Player tag not found")
+                return;
+            }
+            try {
+                let subtitleContent;
+
+                if (subtitleFile) {
+                    // Handle local file
+                    subtitleContent = await subtitleFile.text();
+                } else if (subtitleUrl) {
+                    // Fetch remote file
+                    const response = await fetch(subtitleUrl);
+                    subtitleContent = await response.text();
+                    const url = document.getElementById('videoUrl').value;        
+                    saveToHistory(url);
+                } else {
+                    return;
+                }
+
+                // Convert SRT to VTT if needed
+                if (subtitleContent.trim().startsWith('WEBVTT')) {
+                    // Already VTT format
+                    subtitleContent = subtitleContent;
+                } else {
+                    // Assume SRT format and convert
+                    subtitleContent = srtToVTT(subtitleContent);
+                }
+
+                // Create blob and track
+                const blob = new Blob([subtitleContent], { type: 'text/vtt' });
+                const url = URL.createObjectURL(blob);
+
+                // Remove existing tracks
+                while (videoElement.getElementsByTagName('track').length > 0) {
+                    videoElement.getElementsByTagName('track')[0].remove();
+                }
+
+                // Add new track
+                const track = document.createElement('track');
+                track.kind = 'subtitles';
+                track.label = 'Custom Subtitles';
+                track.srcLang = 'en';
+                track.src = url;
+                track.default = true;
+
+                videoElement.appendChild(track);
+
+                if (player) {
+                    
+                }
+
+                // Clean up old blob URL
+                track.onload = () => {
+                    URL.revokeObjectURL(url);
+                };
+                return url;
+            } catch (error) {
+                console.error('Error loading subtitles:', error);
+                alert('Error loading subtitles. Please check the file format and try again.');
+            }
+        }
+
+        function saveToHistory(url) {
+            let history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
+            const subtitleUrl = document.getElementById('subtitleUrl').value;
+            const timestamp = new Date().toISOString();
+
+            // Remove duplicate if exists
+            history = history.filter(item => item.url !== url);
+
+            // Add new entry
+            history.unshift({
+                url: url,
+                timestamp: timestamp,
+                lastPosition: player ? player.currentTime : 0,
+                subtitleUrl
+            });
+
+            // Keep only last 10 entries
+            if (history.length > 10) {
+                history = history.slice(0, 10);
+            }
+
+            const lastVideo = JSON.parse(localStorage.getItem('lastVideo'));
+            if(lastVideo && url == lastVideo.url) {
+                localStorage.setItem('lastVideo', JSON.stringify({
+                    url: lastVideo.url,
+                    time: lastVideo.time,
+                    subtitle: document.getElementById('subtitleUrl').value
+                }));
+            }
+
+            localStorage.setItem('videoHistory', JSON.stringify(history));
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
+
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <div>${item.url}</div>
+                        <div class="timestamp">Last played: ${new Date(item.timestamp).toLocaleString()}</div>
+                    </div>
+                    <button onclick="loadHistoryItem('${item.url}', ${item.lastPosition}, ${item.subtitleUrl})">Play</button>
+                </div>
+            `).join('');
+        }
+
+        function loadHistoryItem(url, position, subtitle) {
+            document.getElementById('videoUrl').value = url;
+            if(subtitle) {
+                document.getElementById('subtitleUrl').value = subtitle;
+            }
+            loadVideo(position);
+        }
+    </script>
+</body>
+
+</html>
