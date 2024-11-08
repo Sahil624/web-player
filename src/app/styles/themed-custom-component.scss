@@ -1,7 +1,0 @@
-// Custom Mixins
-@import '../dashboard/dashboard/components/dropbox/components/movie-info/movie-info.component.scss';
-
-@mixin custom-components($theme){
-    // Include custom components here
-    @include app-movie-info-theme($theme);
-}
